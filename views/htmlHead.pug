@@ -1,0 +1,30 @@
+doctype html
+html
+  head
+    title Back-End Developer Test
+    link(rel='stylesheet', href='/css/bootstrap.min.css', integrity='sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk', crossorigin='anonymous')
+   
+  body
+
+    nav.navbar.navbar-dark.bg-primary.navbar-expand-lg.mb-5
+      a.navbar-brand(href='#') Backend Dev Test
+      button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarNav' aria-controls='navbarNav' aria-expanded='false' aria-label='Toggle navigation')
+        span.navbar-toggler-icon
+      #navbarNav.collapse.navbar-collapse
+        ul.navbar-nav
+          li.nav-item
+            a.nav-link(href='/')
+              | Subscription Payment 
+              span.sr-only (current)
+          li.nav-item
+            a.nav-link(href='/customers') Customers
+            
+          
+          
+
+
+
+    block content
+
+script(src='/js/jquery-3.4.1.slim.min.js'  crossorigin='anonymous')
+script(src='/js/bootstrap.min.js' crossorigin='anonymous')

@@ -1,0 +1,75 @@
+extends htmlHead
+
+block content
+    #subscribeDiv(class="container")
+        h1 Subscription Payment Form
+        
+        form#subscribeForm(method="post", action="/process")
+            div(class="form-group")
+                #dropin
+            div(class="form-group")
+
+                label Select your plan
+                select(name="plan" class="form-control")
+                    each plan in plans
+                        option(value=plan.id)  #{plan.name} ( $#{plan.price} / month )
+
+            input#nonce(type="hidden", name="payment_method_nonce")
+            input#subscribeBtn(class="btn btn-primary" type="submit", value="Subscribe Now")
+
+
+            div.border.rounded.px-3.py-3.my-3.shadow-sm
+                h3 Test Credentials
+                p
+                    | Card Number: 4111-1111-1111-1111 
+                    br
+                    | Exp Date: 11/20
+                    br
+                    | CVV: 123
+                h3 Paypal Credential Sandbox
+                p
+                    | email: emeloydmlim-buyer@gmail.com'
+                    br
+                    | pw: iwantobuy
+
+
+
+    script(src="/js/dropin.min.js")
+    script.
+        let form = document.querySelector('#subscribeForm');
+        let nonceInput = document.querySelector('#nonce');
+        braintree.dropin.create({
+            authorization: '#{token}',
+            container: '#dropin',
+            paypal: {
+                flow: 'vault'
+            },
+            card: {
+                cardholderName: {
+                required: false
+                }
+            }
+            }).then(function (dropinInstance) {
+
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault();
+
+                    dropinInstance.requestPaymentMethod(function (err, payload) {
+                        if (err) {
+                        // Handle errors in requesting payment method
+                        return;
+                        }
+
+                        // Send payload.nonce to your server
+                        nonceInput.value = payload.nonce;
+                        form.submit();
+                    });
+                });
+            }).catch(function (err) {
+                // Handle any errors that might've occurred when creating Drop-in
+                console.error(err);
+            });
+           
+
+
+

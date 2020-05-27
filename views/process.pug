@@ -1,0 +1,15 @@
+extends htmlHead
+
+block content
+    - var strResult = JSON.stringify(result, null, 3);
+
+    div(class="container")
+        div(class="row")
+            if result.success
+                h1 Your #{event} has been processed successfully!
+                br
+                h2 Result:: #{event}
+                pre #{strResult}
+            else
+                h1 Your  #{event} has failed :(
+                #{result.message}

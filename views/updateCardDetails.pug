@@ -1,0 +1,84 @@
+extends htmlHead
+
+block content
+    #subscribeDiv(class="container")
+        h1 Update Credit Card
+        
+        form#subscribeForm(method="post", action="/update-card-details")
+            div(class="form-group")
+                #dropin
+            
+
+            input#nonce(type="hidden", name="payment_method_nonce")
+            input#cardToken(type="hidden", name="card_token")
+            input#subscribeBtn(class="btn btn-primary" type="submit", value="Save")
+    
+    script(src="/js/dropin.min.js")
+    script.
+        
+        let form = document.querySelector('#subscribeForm');
+        let nonceInput = document.querySelector('#nonce');
+        let cardToken = document.querySelector('#cardToken');
+       
+        braintree.dropin.create({
+            authorization: '#{token}',
+            container: '#dropin',
+            card: {
+                cardholderName: {
+                required: false,
+                },
+                overrides: {
+                fields: {
+                    number: {
+                        selector: '#card-number',
+                        placeholder:  '#{card.first}' + ' **** **** ' + '#{card.last}',
+                        
+                    },
+                    cvv: {
+                        selector: '#cvv',
+                        placeholder: '***'
+                    },
+                    expirationDate: {
+                        selector: '#expiration-date',
+                        placeholder: '#{card.expDate.month}' + '/' +  '#{card.expDate.year.slice(-2)}'
+                    }
+                },
+                styles: {
+                    input: {
+                    color: 'blue',
+                    'font-size': '18px'
+                    },
+                    '.number': {
+                    'font-family': 'monospace'
+                    // Custom web fonts are not supported. Only use system installed fonts.
+                    },
+                    '.invalid': {
+                    color: 'red'
+                    }
+                }
+                }
+            }
+            }).then(function (dropinInstance) {
+
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    console.log(dropinInstance);
+                    dropinInstance.requestPaymentMethod(function (err, payload) {
+                        if (err) {
+                        // Handle errors in requesting payment method
+                        console.log(err);
+                        return;
+                        }
+                        console.log(payload);
+
+                        // Send payload.nonce to your server
+                        cardToken.value = '#{card.cardToken}'; 
+                        nonceInput.value = payload.nonce;
+                        form.submit();
+                    });
+                });
+            }).catch(function (err) {
+                // Handle any errors that might've occurred when creating Drop-in
+                console.error(err);
+            });
+
