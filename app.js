@@ -3,7 +3,6 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const app = express();
 
-const PORT = process.env.PORT || 3000;
 const routes = require("./routers/index");
 
 // view engine setup
@@ -24,8 +23,10 @@ app.use(function (req, res, next) {
 });
 
 // Listen
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
+  console.log("Press Ctrl+C to quit.");
 });
 
 module.exports = app;
